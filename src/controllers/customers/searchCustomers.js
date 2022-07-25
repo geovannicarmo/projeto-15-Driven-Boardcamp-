@@ -6,7 +6,8 @@ export async function searchCustomers(req, res){
 console.log(partCpf)
     if(partCpf){
 
-    const {rows: customers} = await connection.query( `SELECT * FROM customers WHERE LOWER(customers.cpf) LIKE ($1) `, [`${partCpf}%`]) 
+    const {rows: customers} = await connection.query( `SELECT * FROM customers 
+    WHERE LOWER(customers.cpf) LIKE ($1) `, [`${partCpf}%`]) 
     return res.send(customers)
     } else{
         const {rows: customers} = await connection.query( `SELECT * FROM customers `)

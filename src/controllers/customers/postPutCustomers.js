@@ -11,7 +11,7 @@ export async function addCustomers(req,res){
     
     if(validation.error){
         console.log(validation.error)
-        return res.sendStatus(405)
+        return res.sendStatus(400)
     }
 
     const {rows: isCpf} = await connection.query(`

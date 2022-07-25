@@ -9,8 +9,14 @@ export async function getGamesParams(req, res){
     console.log(name)
 
         const {rows: games} = await connection.query( 
-            ` SELECT games.*, categories.name AS "categoryName" FROM   games JOIN categories ON games."categoryId" = categories.id WHERE LOWER(games.name) LIKE ($1) `, [`${name}%`])
+            ` SELECT games.*, categories.name AS "categoryName" 
+            FROM   games 
+            JOIN categories 
+            ON games."categoryId" = categories.id 
+            WHERE LOWER(games.name) LIKE ($1) `, [`${name}%`])
         res.send(games)
+
+
     }
     catch(error){
         res.status(401).send(error)
@@ -20,11 +26,21 @@ export async function getGamesParams(req, res){
 export async function getGames(req, res){
 
     try{
+        const partgame = req.query.name;
+        console.log(partgame)
 
-
+        if(partgame){
+            const {rows: games} = await connection.query( 
+                ` SELECT games.*, categories.name AS "categoryName" FROM   games JOIN categories ON games."categoryId" = categories.id 
+                WHERE LOWER(games.name) LIKE ($1) `, [`${partgame}%`]) 
+    
+           return res.send(games)
+        }
+        else{
         const {rows: games} = await connection.query( 
             ' SELECT games.*, categories.name AS "categoryName" FROM   games JOIN categories ON games."categoryId" = categories.id ')
         res.send(games)
+        }
     }
     catch(error){
         res.status(401).send(error)
