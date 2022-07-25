@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import categoryRoute from './routes/categoryRoute.js'
 import gameRouter from './routes/gameRouter.js'
 import customersRout from './routes/customersRout.js'
+import rentalsRoute from './routes/rentalsRoute.js'
 
 const app = express()
 app.use(cors())
@@ -15,6 +16,7 @@ dotenv.config()
 app.use(categoryRoute)
 app.use(gameRouter)
 app. use(customersRout)
+app.use(rentalsRoute)
 
 
 const PORT = process.env.PORT
