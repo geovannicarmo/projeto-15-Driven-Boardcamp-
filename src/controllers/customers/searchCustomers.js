@@ -2,10 +2,19 @@ import connection from "../../dbsStrategy/postgres.js"
 
 export async function searchCustomers(req, res){
 
-    const {rows: customers} = await connection.query( 'SELECT * FROM customers') 
+    const partCpf = req.query.cpf;
+console.log(partCpf)
+    if(partCpf){
 
-    console.log(customers)
+    const {rows: customers} = await connection.query( `SELECT * FROM customers WHERE LOWER(customers.cpf) LIKE ($1) `, [`${partCpf}%`]) 
     return res.send(customers)
+    } else{
+        const {rows: customers} = await connection.query( `SELECT * FROM customers `)
+        return res.send(customers)
+    }
+
+
+    
 
 }
 
@@ -20,6 +29,9 @@ export async function searchCustomer(req, res){
         WHERE   id = ($1)
     `, [idCustomer])
 
-    console.log(customer[0])
+    if(customer.length===0){
+        return res.sendStatus(404)
+    }
+
     res.send(customer[0])
 }
