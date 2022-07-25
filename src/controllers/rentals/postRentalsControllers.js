@@ -13,10 +13,12 @@ export async function addRentals(req,res){
         return res.sendStatus(400)
     }
 
-    let { rows: pricePerDay} = await connection.query(`
-        SELECT "pricePerDay" FROM games  
+    const { rows: pricePerDay} = await connection.query(`
+        SELECT "pricePerDay", "stockTotal" FROM games  
         WHERE id = ($1);
     `,[gameId])
+
+    
 
     if(pricePerDay.length ===0){
         return res.sendStatus(400)
@@ -31,10 +33,22 @@ if(iscustomers.length ===0){
     return res.sendStatus(400)
 }
 
-    pricePerDay = pricePerDay[0].pricePerDay
-    const originalPrice = pricePerDay*daysRented
+    const pricePerDay1 = pricePerDay[0].pricePerDay
+    const originalPrice = pricePerDay1*daysRented
 
-    console.log(pricePerDay)
+    const {rows: alugado} = await connection.query(`
+        SELECT * FROM rentals
+        WHERE "gameId" = ($1);
+
+    `,[gameId])
+
+    console.log(alugado.length)
+    console.log(pricePerDay[0].stockTotal)
+
+    if(alugado.length>=pricePerDay[0].stockTotal){
+
+        return res.sendStatus(400)
+    }
 
     await connection.query(`
     INSERT INTO rentals (
@@ -76,6 +90,8 @@ export async function finishRentals(req, res){
 
     const rentDate = dataRental[0].rentDate
     const pricePerDay = dataRental[0].pricePerDay
+
+    
 
 
     const dayNow = dayjs().format('YYYY-MM-DD')
