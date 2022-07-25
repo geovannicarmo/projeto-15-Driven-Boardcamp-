@@ -22,9 +22,10 @@ export async function postCategory (req, res){
         return res.sendStatus(400)
     }
     const newCategoryName = req.body.name
+    console.log(newCategoryName)
 
     const {rows: isCategory} = await connection.query(`
-        SELECT * FROM customers
+        SELECT * FROM categories
         WHERE name = ($1)
     `,[newCategoryName])
 
@@ -36,10 +37,10 @@ export async function postCategory (req, res){
     
     await connection.query('INSERT INTO categories (name) VALUES ($1)',[newCategoryName])
 
-    res.send("newCategory")
+    res.send("201")
 
     }
     catch(error){
-        return res.status(407).send(error)
+        return res.status(400).send(error)
     }
 }
